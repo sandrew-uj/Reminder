@@ -1,0 +1,6 @@
+data/*
+dbs/*
+venv/*
+*/venv/*
+.env
+

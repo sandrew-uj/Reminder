@@ -1,0 +1,72 @@
+version: "3.3"
+
+services:
+  backend:
+    container_name: reminder_backend
+    image: registry.gitlab.com/lpbt/reminder/reminder_backend:${TAG}
+    #    build: ./backend
+    volumes:
+      - ./dbs:/backend-bot/dbs
+    environment:
+      - TOKEN=${TOKEN}
+      - OWNER=${OWNER}
+      - BACKEND_URL=${BACKEND_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
+    ports:
+      - "8000:8000"
+    networks:
+      app:
+        ipv4_address: 172.16.31.4
+
+
+  bot:
+    container_name: reminder_bot
+    #    build: ./bot
+    image: registry.gitlab.com/lpbt/reminder/reminder_bot:${TAG}
+    environment:
+      - TOKEN=${TOKEN}
+      - OWNER=${OWNER}
+      - BACKEND_URL=${BACKEND_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
+    networks:
+      app:
+        ipv4_address: 172.16.31.3
+
+
+
+  demon:
+    container_name: reminder_demon
+    #    build: ./demon
+    image: registry.gitlab.com/lpbt/reminder/reminder_demon:${TAG}
+    environment:
+      - TOKEN=${TOKEN}
+      - OWNER=${OWNER}
+      - BACKEND_URL=${BACKEND_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
+    networks:
+      app:
+        ipv4_address: 172.16.31.5
+
+
+#  frontend:
+#    container_name: reminder_frontend
+##    build: ./frontend
+#    image: registry.gitlab.com/lpbt/reminder/reminder_frontend:${TAG}
+#    environment:
+#      - TOKEN=${TOKEN}
+#      - OWNER=${OWNER}
+#      - BACKEND_URL=${BACKEND_URL}
+#      - FRONTEND_URL=${FRONTEND_URL}
+#    ports:
+#      - "5090:5090"
+#    networks:
+#      app:
+#        ipv4_address: 172.16.31.2
+
+networks:
+  app:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.31.0/24
+
